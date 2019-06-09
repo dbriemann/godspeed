@@ -1,6 +1,6 @@
 package godspeed
 
-type window struct {
+type win struct {
 	Title      string
 	Width      int
 	Height     int
@@ -11,9 +11,9 @@ type window struct {
 // Config represents the whole godspeed configuration.
 // It is structured into topics and completely public.
 var Config = struct {
-	Window window
+	Window win
 }{
-	window{
+	win{
 		Title:      "godspeed game",
 		Width:      800,
 		Height:     600,
