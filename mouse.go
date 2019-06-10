@@ -37,7 +37,7 @@ func (m *mouse) Moved() Vec2 {
 }
 
 var (
-	// Mouse exposes all
+	// Mouse exposes all mouse functionality
 	Mouse = mouse{}
 )
 

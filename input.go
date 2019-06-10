@@ -39,6 +39,7 @@ const (
 func processEvents() {
 	// Update internal status depending on the last frame.
 	updateMouseStatus()
+	updateKeyboardStatus()
 
 	// Poll events from sdl event queue.
 	for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
@@ -52,6 +53,9 @@ func processEvents() {
 		case *sdl.MouseMotionEvent:
 			mme := event.(*sdl.MouseMotionEvent)
 			processMouseMotionEvent(mme)
+		case *sdl.KeyboardEvent:
+			kbe := event.(*sdl.KeyboardEvent)
+			processKeyboardEvent(kbe)
 		case *sdl.QuitEvent:
 			running = false
 		}
