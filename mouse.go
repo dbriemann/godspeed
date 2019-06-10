@@ -24,11 +24,27 @@ func (m *mouse) ButtonState(b MouseButton) State {
 	return m.buttonStates[b]
 }
 
+func (m *mouse) Pos() Vec2 {
+	return m.pos
+}
+
+func (m *mouse) Wheel() Vec2 {
+	return m.wheel
+}
+
+func (m *mouse) Moved() Vec2 {
+	return m.rel
+}
+
 var (
+	// Mouse exposes all
 	Mouse = mouse{}
 )
 
 func updateMouseStatus() {
+	Mouse.rel.X, Mouse.rel.Y = Mouse.pos.X-Mouse.lastPos.X, Mouse.pos.Y-Mouse.lastPos.Y
+	Mouse.lastPos.X, Mouse.lastPos.Y = Mouse.pos.X, Mouse.pos.Y
+
 	for i := 0; i <= int(ButtonX2); i++ {
 		switch Mouse.buttonStates[i] {
 		case Pressed:
@@ -43,6 +59,23 @@ func updateMouseStatus() {
 			Mouse.buttonStates[i] = Up
 		}
 	}
+}
+
+func processMouseMotionEvent(mme *sdl.MouseMotionEvent) {
+	Mouse.pos.X = mme.X
+	Mouse.pos.Y = mme.Y
+	Mouse.rel.X = mme.XRel
+	Mouse.rel.Y = mme.YRel
+}
+
+func processMouseWheelEvent(mwe *sdl.MouseWheelEvent) {
+	mul := int32(1)
+	if mwe.Direction == sdl.MOUSEWHEEL_FLIPPED {
+		mul = -1
+	}
+
+	Mouse.wheel.X = mul * mwe.X
+	Mouse.wheel.Y = mul * mwe.Y
 }
 
 func processMouseButtonEvent(mbe *sdl.MouseButtonEvent) {

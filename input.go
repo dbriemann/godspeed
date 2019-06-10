@@ -7,6 +7,21 @@ import (
 // State describes the state of a Button or a Key.
 type State uint8
 
+func (s State) String() string {
+	switch s {
+	case Up:
+		return "up"
+	case Down:
+		return "down"
+	case Pressed:
+		return "pressed"
+	case Released:
+		return "released"
+	default:
+		return "unknown"
+	}
+}
+
 const (
 	// Up describes that a key or button is up.
 	Up State = iota
@@ -17,20 +32,6 @@ const (
 	// Released descibes that a key or button was just released.
 	Released
 )
-
-var (
-	stateToStr = map[State]string{
-		Up:       "up",
-		Down:     "down",
-		Pressed:  "pressed",
-		Released: "released",
-	}
-)
-
-// StateStr returns a human-readable description for a State.
-func StateStr(s State) string {
-	return stateToStr[s]
-}
 
 // processEvents receives events from the sdl event queue and
 // maps them to the internal representation. It updates all
@@ -45,6 +46,12 @@ func processEvents() {
 		case *sdl.MouseButtonEvent:
 			mbe := event.(*sdl.MouseButtonEvent)
 			processMouseButtonEvent(mbe)
+		case *sdl.MouseWheelEvent:
+			mwe := event.(*sdl.MouseWheelEvent)
+			processMouseWheelEvent(mwe)
+		case *sdl.MouseMotionEvent:
+			mme := event.(*sdl.MouseMotionEvent)
+			processMouseMotionEvent(mme)
 		case *sdl.QuitEvent:
 			running = false
 		}

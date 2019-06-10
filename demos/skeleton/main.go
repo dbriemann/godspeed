@@ -15,7 +15,7 @@ func (g *game) init() {
 
 func (g *game) update(dt float64) {
 	s := godspeed.Mouse.ButtonState(godspeed.ButtonX2)
-	fmt.Println(godspeed.StateStr(s))
+	fmt.Println(s)
 }
 
 func (g *game) draw() {
