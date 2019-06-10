@@ -1,6 +1,7 @@
 package godspeed
 
 import (
+	"fmt"
 	"math"
 	"time"
 
@@ -11,7 +12,7 @@ import (
 var (
 	version       = "0.0.1-alpha"
 	isInitialized = false
-	tickTime      = 10 * time.Millisecond
+	tickTime      = 1 * time.Second / 60.0
 	frameTime     = tickTime.Seconds()
 	running       = false
 
@@ -25,33 +26,24 @@ var (
 
 	// Init is run once before the game is started.
 	Init = func() {
-
 	}
 
 	// Update is called for every logic step of the engine.
 	// The parameter dt contains the time in seconds since
 	// the last call to Update.
 	Update = func(dt float64) {
-
 	}
 
 	// Draw is called for every draw step of the engine.
 	// It will use the active RenderTarget to draw onto.
 	Draw = func() {
-
 	}
 
 	// Running returns true if the engine is running and false
-	// otherwise. The default function checks for sdl quit event.
+	// otherwise. The default function returns the running variable,
+	// which is only set to true by the SDL quit event.
 	Running = func() bool {
-		// Poll events and swap buffers, etc.
-		for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
-			switch event.(type) {
-			case *sdl.QuitEvent:
-				return false
-			}
-		}
-		return true
+		return running
 	}
 )
 
@@ -94,9 +86,13 @@ var (
 
 			if snap > 1.0 {
 				fps = uint(math.Round(float64(frames) / snap))
+				fmt.Println("FPS", fps)
 				up = current
 				frames = 0
 			}
+
+			// Poll events and swap buffers, etc.
+			processEvents()
 
 			sleepFor := (frameTime - current.Sub(last).Seconds()) * 0.99
 			time.Sleep(time.Duration(sleepFor * float64(time.Second)))

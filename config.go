@@ -15,8 +15,8 @@ var Config = struct {
 }{
 	win{
 		Title:      "godspeed game",
-		Width:      800,
-		Height:     600,
+		Width:      1000,
+		Height:     800,
 		Fullscreen: false,
 		VSync:      false,
 	},
