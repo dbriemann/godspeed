@@ -12,7 +12,6 @@ func (g *game) init() {
 }
 
 func (g *game) update(dt float64) {
-
 }
 
 func (g *game) draw() {
