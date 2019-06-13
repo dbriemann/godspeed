@@ -13,15 +13,32 @@ const (
 )
 
 type mouse struct {
-	pos          Vec2
-	lastPos      Vec2
-	rel          Vec2
-	wheel        Vec2
-	buttonStates [5]State
+	lastPos   Vec2
+	pos       Vec2
+	rel       Vec2
+	wheel     Vec2
+	lastInput [5]bool
+	input     [5]bool
 }
 
-func (m *mouse) ButtonState(b MouseButton) State {
-	return m.buttonStates[b]
+// ButtonPressed returns if button b was just pressed.
+func (m *mouse) ButtonPressed(b MouseButton) bool {
+	return m.input[b] && !m.lastInput[b]
+}
+
+// ButtonDown returns if button b is held down.
+func (m *mouse) ButtonDown(b MouseButton) bool {
+	return m.lastInput[b] && m.input[b]
+}
+
+// ButtonReleased returns if button b was just released.
+func (m *mouse) ButtonReleased(b MouseButton) bool {
+	return m.lastInput[b] && !m.input[b]
+}
+
+// ButtonUp returns if button b is up.
+func (m *mouse) ButtonUp(b MouseButton) bool {
+	return !m.lastInput[b] && !m.input[b]
 }
 
 func (m *mouse) Pos() Vec2 {
@@ -41,24 +58,11 @@ var (
 	Mouse = mouse{}
 )
 
-func updateMouseStatus() {
-	Mouse.rel.X, Mouse.rel.Y = Mouse.pos.X-Mouse.lastPos.X, Mouse.pos.Y-Mouse.lastPos.Y
-	Mouse.lastPos.X, Mouse.lastPos.Y = Mouse.pos.X, Mouse.pos.Y
+func (m *mouse) updateStatus() {
+	m.rel.X, m.rel.Y = m.pos.X-m.lastPos.X, m.pos.Y-m.lastPos.Y
+	m.lastPos.X, m.lastPos.Y = m.pos.X, m.pos.Y
 
-	for i := 0; i <= int(ButtonX2); i++ {
-		switch Mouse.buttonStates[i] {
-		case Pressed:
-			// If the button was pressed last frame, set it to down.
-			// If it receives a new event, the state is overwritten with
-			// the correct one.
-			Mouse.buttonStates[i] = Down
-		case Released:
-			// If the button was released last frame, set it to up.
-			// If it receives a new event, the state is overwritten with
-			// the correct one.
-			Mouse.buttonStates[i] = Up
-		}
-	}
+	m.lastInput = m.input
 }
 
 func processMouseMotionEvent(mme *sdl.MouseMotionEvent) {
@@ -79,27 +83,27 @@ func processMouseWheelEvent(mwe *sdl.MouseWheelEvent) {
 }
 
 func processMouseButtonEvent(mbe *sdl.MouseButtonEvent) {
-	state := Up
+	var pressed bool
 	switch mbe.State {
 	case sdl.PRESSED:
-		state = Pressed
+		pressed = true
 	case sdl.RELEASED:
-		state = Released
+		pressed = false
 	default:
 		// Unknown state.
 	}
 
 	switch mbe.Button {
 	case sdl.BUTTON_LEFT:
-		Mouse.buttonStates[ButtonLeft] = state
+		Mouse.input[ButtonLeft] = pressed
 	case sdl.BUTTON_RIGHT:
-		Mouse.buttonStates[ButtonRight] = state
+		Mouse.input[ButtonRight] = pressed
 	case sdl.BUTTON_MIDDLE:
-		Mouse.buttonStates[ButtonMiddle] = state
+		Mouse.input[ButtonMiddle] = pressed
 	case sdl.BUTTON_X1:
-		Mouse.buttonStates[ButtonX1] = state
+		Mouse.input[ButtonX1] = pressed
 	case sdl.BUTTON_X2:
-		Mouse.buttonStates[ButtonX2] = state
+		Mouse.input[ButtonX2] = pressed
 	default:
 		// Unknown button.
 	}
