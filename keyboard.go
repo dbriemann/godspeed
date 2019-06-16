@@ -3,142 +3,283 @@ package godspeed
 import (
 	"fmt"
 
+	"github.com/kr/pretty"
 	"github.com/veandco/go-sdl2/sdl"
 )
 
+// Key is the internal type to represent a key.
 type Key uint32
 
 func (key Key) String() string {
-	return sdl.GetKeyName(sdl.Keycode(key))
+	return sdl.GetKeyName(sdl.GetKeyFromScancode(internal2Scancode[key]))
 }
 
 const (
-	KeyUnknown      = Key(sdl.K_UNKNOWN)
-	KeySpace        = Key(sdl.K_SPACE)
-	KeyApostrophe   = Key(sdl.K_QUOTE)
-	KeyComma        = Key(sdl.K_COMMA)
-	KeyMinus        = Key(sdl.K_MINUS)
-	KeyPeriod       = Key(sdl.K_PERIOD)
-	KeySlash        = Key(sdl.K_SLASH)
-	Key0            = Key(sdl.K_0)
-	Key1            = Key(sdl.K_1)
-	Key2            = Key(sdl.K_2)
-	Key3            = Key(sdl.K_3)
-	Key4            = Key(sdl.K_4)
-	Key5            = Key(sdl.K_5)
-	Key6            = Key(sdl.K_6)
-	Key7            = Key(sdl.K_7)
-	Key8            = Key(sdl.K_8)
-	Key9            = Key(sdl.K_9)
-	KeySemicolon    = Key(sdl.K_SEMICOLON)
-	KeyEqual        = Key(sdl.K_EQUALS)
-	KeyA            = Key(sdl.K_a)
-	KeyB            = Key(sdl.K_b)
-	KeyC            = Key(sdl.K_c)
-	KeyD            = Key(sdl.K_d)
-	KeyE            = Key(sdl.K_e)
-	KeyF            = Key(sdl.K_f)
-	KeyG            = Key(sdl.K_g)
-	KeyH            = Key(sdl.K_h)
-	KeyI            = Key(sdl.K_i)
-	KeyJ            = Key(sdl.K_j)
-	KeyK            = Key(sdl.K_k)
-	KeyL            = Key(sdl.K_l)
-	KeyM            = Key(sdl.K_m)
-	KeyN            = Key(sdl.K_n)
-	KeyO            = Key(sdl.K_o)
-	KeyP            = Key(sdl.K_p)
-	KeyQ            = Key(sdl.K_q)
-	KeyR            = Key(sdl.K_r)
-	KeyS            = Key(sdl.K_s)
-	KeyT            = Key(sdl.K_t)
-	KeyU            = Key(sdl.K_u)
-	KeyV            = Key(sdl.K_v)
-	KeyW            = Key(sdl.K_w)
-	KeyX            = Key(sdl.K_x)
-	KeyY            = Key(sdl.K_y)
-	KeyZ            = Key(sdl.K_z)
-	KeyLeftBracket  = Key(sdl.K_LEFTBRACKET)
-	KeyBackslash    = Key(sdl.K_BACKSLASH)
-	KeyRightBracket = Key(sdl.K_RIGHTBRACKET)
-	KeyGraveAccent  = Key(sdl.K_BACKQUOTE)
-	KeyWWW          = Key(sdl.K_WWW)
-	KeyEscape       = Key(sdl.K_ESCAPE)
-	KeyEnter        = Key(sdl.K_RETURN)
-	KeyTab          = Key(sdl.K_TAB)
-	KeyBackspace    = Key(sdl.K_BACKSPACE)
-	KeyInsert       = Key(sdl.K_INSERT)
-	KeyDelete       = Key(sdl.K_DELETE)
-	KeyRight        = Key(sdl.K_RIGHT)
-	KeyLeft         = Key(sdl.K_LEFT)
-	KeyDown         = Key(sdl.K_DOWN)
-	KeyUp           = Key(sdl.K_UP)
-	KeyPageUp       = Key(sdl.K_PAGEUP)
-	KeyPageDown     = Key(sdl.K_PAGEDOWN)
-	KeyHome         = Key(sdl.K_HOME)
-	KeyEnd          = Key(sdl.K_END)
-	KeyCapsLock     = Key(sdl.K_CAPSLOCK)
-	KeyScrollLock   = Key(sdl.K_SCROLLLOCK)
-	KeyNumLock      = Key(sdl.K_NUMLOCKCLEAR)
-	KeyPrintScreen  = Key(sdl.K_PRINTSCREEN)
-	KeyPause        = Key(sdl.K_PAUSE)
-	KeyF1           = Key(sdl.K_F1)
-	KeyF2           = Key(sdl.K_F2)
-	KeyF3           = Key(sdl.K_F3)
-	KeyF4           = Key(sdl.K_F4)
-	KeyF5           = Key(sdl.K_F5)
-	KeyF6           = Key(sdl.K_F6)
-	KeyF7           = Key(sdl.K_F7)
-	KeyF8           = Key(sdl.K_F8)
-	KeyF9           = Key(sdl.K_F9)
-	KeyF10          = Key(sdl.K_F10)
-	KeyF11          = Key(sdl.K_F11)
-	KeyF12          = Key(sdl.K_F12)
-	KeyF13          = Key(sdl.K_F13)
-	KeyF14          = Key(sdl.K_F14)
-	KeyF15          = Key(sdl.K_F15)
-	KeyF16          = Key(sdl.K_F16)
-	KeyF17          = Key(sdl.K_F17)
-	KeyF18          = Key(sdl.K_F18)
-	KeyF19          = Key(sdl.K_F19)
-	KeyF20          = Key(sdl.K_F20)
-	KeyF21          = Key(sdl.K_F21)
-	KeyF22          = Key(sdl.K_F22)
-	KeyF23          = Key(sdl.K_F23)
-	KeyF24          = Key(sdl.K_F24)
-	KeyNum0         = Key(sdl.K_KP_0)
-	KeyNum1         = Key(sdl.K_KP_1)
-	KeyNum2         = Key(sdl.K_KP_2)
-	KeyNum3         = Key(sdl.K_KP_3)
-	KeyNum4         = Key(sdl.K_KP_4)
-	KeyNum5         = Key(sdl.K_KP_5)
-	KeyNum6         = Key(sdl.K_KP_6)
-	KeyNum7         = Key(sdl.K_KP_7)
-	KeyNum8         = Key(sdl.K_KP_8)
-	KeyNum9         = Key(sdl.K_KP_9)
-	KeyNumDecimal   = Key(sdl.K_KP_DECIMAL)
-	KeyNumDivide    = Key(sdl.K_KP_DIVIDE)
-	KeyNumMultiply  = Key(sdl.K_KP_MULTIPLY)
-	KeyNumSubtract  = Key(sdl.K_KP_MINUS)
-	KeyNumAdd       = Key(sdl.K_KP_PLUS)
-	KeyNumEnter     = Key(sdl.K_KP_ENTER)
-	KeyNumEqual     = Key(sdl.K_KP_EQUALS)
-	KeyLeftShift    = Key(sdl.K_LSHIFT)
-	KeyLeftControl  = Key(sdl.K_LCTRL)
-	KeyLeftAlt      = Key(sdl.K_LALT)
-	KeyLeftSuper    = Key(sdl.K_LGUI)
-	KeyRightShift   = Key(sdl.K_RSHIFT)
-	KeyRightControl = Key(sdl.K_RCTRL)
-	KeyRightAlt     = Key(sdl.K_RALT)
-	KeyRightSuper   = Key(sdl.K_RGUI)
-	KeyMenu         = Key(sdl.K_MENU)
-	KeyLast         = Key(0)
+	KeyUnknown Key = iota
+	Key0
+	Key1
+	Key2
+	Key3
+	Key4
+	Key5
+	Key6
+	Key7
+	Key8
+	Key9
+	KeyA
+	KeyB
+	KeyC
+	KeyD
+	KeyE
+	KeyF
+	KeyG
+	KeyH
+	KeyI
+	KeyJ
+	KeyK
+	KeyL
+	KeyM
+	KeyN
+	KeyO
+	KeyP
+	KeyQ
+	KeyR
+	KeyS
+	KeyT
+	KeyU
+	KeyV
+	KeyW
+	KeyX
+	KeyY
+	KeyZ
+	KeyF1
+	KeyF2
+	KeyF3
+	KeyF4
+	KeyF5
+	KeyF6
+	KeyF7
+	KeyF8
+	KeyF9
+	KeyF10
+	KeyF11
+	KeyF12
+	KeyF13
+	KeyF14
+	KeyF15
+	KeyF16
+	KeyF17
+	KeyF18
+	KeyF19
+	KeyF20
+	KeyF21
+	KeyF22
+	KeyF23
+	KeyF24
+	KeyRight
+	KeyLeft
+	KeyDown
+	KeyUp
+	KeySpace
+	KeyEscape
+	KeyEnter
+	KeyTab
+	KeyBackspace
+	KeyInsert
+	KeyDelete
+	KeyPageUp
+	KeyPageDown
+	KeyPrintScreen
+	KeyPause
+	KeyApostrophe
+	KeyComma
+	KeyMinus
+	KeyPeriod
+	KeySlash
+	KeySemicolon
+	KeyEqual
+	KeyLeftBracket
+	KeyBackslash
+	KeyRightBracket
+	KeyGraveAccent
+	KeyWWW
+	KeyHome
+	KeyEnd
+	KeyCapsLock
+	KeyScrollLock
+	KeyNumLock
+	KeyNum0
+	KeyNum1
+	KeyNum2
+	KeyNum3
+	KeyNum4
+	KeyNum5
+	KeyNum6
+	KeyNum7
+	KeyNum8
+	KeyNum9
+	KeyNumDecimal
+	KeyNumDivide
+	KeyNumMultiply
+	KeyNumSubtract
+	KeyNumAdd
+	KeyNumEnter
+	KeyNumEqual
+	KeyLeftShift
+	KeyLeftControl
+	KeyLeftAlt
+	KeyLeftSuper
+	KeyRightShift
+	KeyRightControl
+	KeyRightAlt
+	KeyRightSuper
+	KeyMenu
+	KeyLast
+)
+
+var (
+	scancode2Internal [sdl.NUM_SCANCODES]Key
+	internal2Scancode [KeyLast]sdl.Scancode
 )
 
 type keyboard struct {
-	lastInput [sdl.NUM_SCANCODES]bool
-	input     [sdl.NUM_SCANCODES]bool
+	lastInput [KeyLast]bool
+	input     [KeyLast]bool
 	any       bool
+}
+
+func (kb *keyboard) init() {
+	// Create a mapping from internal codes to sdl scancodes for all
+	// defined keys.
+	internal2Scancode[KeyUnknown] = sdl.GetScancodeFromKey(sdl.K_UNKNOWN)
+	internal2Scancode[Key0] = sdl.GetScancodeFromKey(sdl.K_0)
+	internal2Scancode[Key1] = sdl.GetScancodeFromKey(sdl.K_1)
+	internal2Scancode[Key2] = sdl.GetScancodeFromKey(sdl.K_2)
+	internal2Scancode[Key3] = sdl.GetScancodeFromKey(sdl.K_3)
+	internal2Scancode[Key4] = sdl.GetScancodeFromKey(sdl.K_4)
+	internal2Scancode[Key5] = sdl.GetScancodeFromKey(sdl.K_5)
+	internal2Scancode[Key6] = sdl.GetScancodeFromKey(sdl.K_6)
+	internal2Scancode[Key7] = sdl.GetScancodeFromKey(sdl.K_7)
+	internal2Scancode[Key8] = sdl.GetScancodeFromKey(sdl.K_8)
+	internal2Scancode[Key9] = sdl.GetScancodeFromKey(sdl.K_9)
+	internal2Scancode[KeyA] = sdl.GetScancodeFromKey(sdl.K_a)
+	internal2Scancode[KeyB] = sdl.GetScancodeFromKey(sdl.K_b)
+	internal2Scancode[KeyC] = sdl.GetScancodeFromKey(sdl.K_c)
+	internal2Scancode[KeyD] = sdl.GetScancodeFromKey(sdl.K_d)
+	internal2Scancode[KeyE] = sdl.GetScancodeFromKey(sdl.K_e)
+	internal2Scancode[KeyF] = sdl.GetScancodeFromKey(sdl.K_f)
+	internal2Scancode[KeyG] = sdl.GetScancodeFromKey(sdl.K_g)
+	internal2Scancode[KeyH] = sdl.GetScancodeFromKey(sdl.K_h)
+	internal2Scancode[KeyI] = sdl.GetScancodeFromKey(sdl.K_i)
+	internal2Scancode[KeyJ] = sdl.GetScancodeFromKey(sdl.K_j)
+	internal2Scancode[KeyK] = sdl.GetScancodeFromKey(sdl.K_k)
+	internal2Scancode[KeyL] = sdl.GetScancodeFromKey(sdl.K_l)
+	internal2Scancode[KeyM] = sdl.GetScancodeFromKey(sdl.K_m)
+	internal2Scancode[KeyN] = sdl.GetScancodeFromKey(sdl.K_n)
+	internal2Scancode[KeyO] = sdl.GetScancodeFromKey(sdl.K_o)
+	internal2Scancode[KeyP] = sdl.GetScancodeFromKey(sdl.K_p)
+	internal2Scancode[KeyQ] = sdl.GetScancodeFromKey(sdl.K_q)
+	internal2Scancode[KeyR] = sdl.GetScancodeFromKey(sdl.K_r)
+	internal2Scancode[KeyS] = sdl.GetScancodeFromKey(sdl.K_s)
+	internal2Scancode[KeyT] = sdl.GetScancodeFromKey(sdl.K_t)
+	internal2Scancode[KeyU] = sdl.GetScancodeFromKey(sdl.K_u)
+	internal2Scancode[KeyV] = sdl.GetScancodeFromKey(sdl.K_v)
+	internal2Scancode[KeyW] = sdl.GetScancodeFromKey(sdl.K_w)
+	internal2Scancode[KeyX] = sdl.GetScancodeFromKey(sdl.K_x)
+	internal2Scancode[KeyY] = sdl.GetScancodeFromKey(sdl.K_y)
+	internal2Scancode[KeyZ] = sdl.GetScancodeFromKey(sdl.K_z)
+	internal2Scancode[KeyF1] = sdl.GetScancodeFromKey(sdl.K_F1)
+	internal2Scancode[KeyF2] = sdl.GetScancodeFromKey(sdl.K_F2)
+	internal2Scancode[KeyF3] = sdl.GetScancodeFromKey(sdl.K_F3)
+	internal2Scancode[KeyF4] = sdl.GetScancodeFromKey(sdl.K_F4)
+	internal2Scancode[KeyF5] = sdl.GetScancodeFromKey(sdl.K_F5)
+	internal2Scancode[KeyF6] = sdl.GetScancodeFromKey(sdl.K_F6)
+	internal2Scancode[KeyF7] = sdl.GetScancodeFromKey(sdl.K_F7)
+	internal2Scancode[KeyF8] = sdl.GetScancodeFromKey(sdl.K_F8)
+	internal2Scancode[KeyF9] = sdl.GetScancodeFromKey(sdl.K_F9)
+	internal2Scancode[KeyF10] = sdl.GetScancodeFromKey(sdl.K_F10)
+	internal2Scancode[KeyF11] = sdl.GetScancodeFromKey(sdl.K_F11)
+	internal2Scancode[KeyF12] = sdl.GetScancodeFromKey(sdl.K_F12)
+	internal2Scancode[KeyF13] = sdl.GetScancodeFromKey(sdl.K_F13)
+	internal2Scancode[KeyF14] = sdl.GetScancodeFromKey(sdl.K_F14)
+	internal2Scancode[KeyF15] = sdl.GetScancodeFromKey(sdl.K_F15)
+	internal2Scancode[KeyF16] = sdl.GetScancodeFromKey(sdl.K_F16)
+	internal2Scancode[KeyF17] = sdl.GetScancodeFromKey(sdl.K_F17)
+	internal2Scancode[KeyF18] = sdl.GetScancodeFromKey(sdl.K_F18)
+	internal2Scancode[KeyF19] = sdl.GetScancodeFromKey(sdl.K_F19)
+	internal2Scancode[KeyF20] = sdl.GetScancodeFromKey(sdl.K_F20)
+	internal2Scancode[KeyF21] = sdl.GetScancodeFromKey(sdl.K_F21)
+	internal2Scancode[KeyF22] = sdl.GetScancodeFromKey(sdl.K_F22)
+	internal2Scancode[KeyF23] = sdl.GetScancodeFromKey(sdl.K_F23)
+	internal2Scancode[KeyF24] = sdl.GetScancodeFromKey(sdl.K_F24)
+	internal2Scancode[KeyRight] = sdl.GetScancodeFromKey(sdl.K_RIGHT)
+	internal2Scancode[KeyLeft] = sdl.GetScancodeFromKey(sdl.K_LEFT)
+	internal2Scancode[KeyDown] = sdl.GetScancodeFromKey(sdl.K_DOWN)
+	internal2Scancode[KeyUp] = sdl.GetScancodeFromKey(sdl.K_UP)
+	internal2Scancode[KeySpace] = sdl.GetScancodeFromKey(sdl.K_SPACE)
+	internal2Scancode[KeyEscape] = sdl.GetScancodeFromKey(sdl.K_ESCAPE)
+	internal2Scancode[KeyEnter] = sdl.GetScancodeFromKey(sdl.K_RETURN)
+	internal2Scancode[KeyTab] = sdl.GetScancodeFromKey(sdl.K_TAB)
+	internal2Scancode[KeyBackspace] = sdl.GetScancodeFromKey(sdl.K_BACKSPACE)
+	internal2Scancode[KeyInsert] = sdl.GetScancodeFromKey(sdl.K_INSERT)
+	internal2Scancode[KeyDelete] = sdl.GetScancodeFromKey(sdl.K_DELETE)
+	internal2Scancode[KeyPageUp] = sdl.GetScancodeFromKey(sdl.K_PAGEUP)
+	internal2Scancode[KeyPageDown] = sdl.GetScancodeFromKey(sdl.K_PAGEDOWN)
+	internal2Scancode[KeyPrintScreen] = sdl.GetScancodeFromKey(sdl.K_PRINTSCREEN)
+	internal2Scancode[KeyPause] = sdl.GetScancodeFromKey(sdl.K_PAUSE)
+	internal2Scancode[KeyApostrophe] = sdl.GetScancodeFromKey(sdl.K_QUOTE)
+	internal2Scancode[KeyComma] = sdl.GetScancodeFromKey(sdl.K_COMMA)
+	internal2Scancode[KeyMinus] = sdl.GetScancodeFromKey(sdl.K_MINUS)
+	internal2Scancode[KeyPeriod] = sdl.GetScancodeFromKey(sdl.K_PERIOD)
+	internal2Scancode[KeySlash] = sdl.GetScancodeFromKey(sdl.K_SLASH)
+	internal2Scancode[KeySemicolon] = sdl.GetScancodeFromKey(sdl.K_SEMICOLON)
+	internal2Scancode[KeyEqual] = sdl.GetScancodeFromKey(sdl.K_EQUALS)
+	internal2Scancode[KeyLeftBracket] = sdl.GetScancodeFromKey(sdl.K_LEFTBRACKET)
+	internal2Scancode[KeyBackslash] = sdl.GetScancodeFromKey(sdl.K_BACKSLASH)
+	internal2Scancode[KeyRightBracket] = sdl.GetScancodeFromKey(sdl.K_RIGHTBRACKET)
+	internal2Scancode[KeyGraveAccent] = sdl.GetScancodeFromKey(sdl.K_BACKQUOTE)
+	internal2Scancode[KeyWWW] = sdl.GetScancodeFromKey(sdl.K_WWW)
+	internal2Scancode[KeyHome] = sdl.GetScancodeFromKey(sdl.K_HOME)
+	internal2Scancode[KeyEnd] = sdl.GetScancodeFromKey(sdl.K_END)
+	internal2Scancode[KeyCapsLock] = sdl.GetScancodeFromKey(sdl.K_CAPSLOCK)
+	internal2Scancode[KeyScrollLock] = sdl.GetScancodeFromKey(sdl.K_SCROLLLOCK)
+	internal2Scancode[KeyNumLock] = sdl.GetScancodeFromKey(sdl.K_NUMLOCKCLEAR)
+	internal2Scancode[KeyNum0] = sdl.GetScancodeFromKey(sdl.K_KP_0)
+	internal2Scancode[KeyNum1] = sdl.GetScancodeFromKey(sdl.K_KP_1)
+	internal2Scancode[KeyNum2] = sdl.GetScancodeFromKey(sdl.K_KP_2)
+	internal2Scancode[KeyNum3] = sdl.GetScancodeFromKey(sdl.K_KP_3)
+	internal2Scancode[KeyNum4] = sdl.GetScancodeFromKey(sdl.K_KP_4)
+	internal2Scancode[KeyNum5] = sdl.GetScancodeFromKey(sdl.K_KP_5)
+	internal2Scancode[KeyNum6] = sdl.GetScancodeFromKey(sdl.K_KP_6)
+	internal2Scancode[KeyNum7] = sdl.GetScancodeFromKey(sdl.K_KP_7)
+	internal2Scancode[KeyNum8] = sdl.GetScancodeFromKey(sdl.K_KP_8)
+	internal2Scancode[KeyNum9] = sdl.GetScancodeFromKey(sdl.K_KP_9)
+	internal2Scancode[KeyNumDecimal] = sdl.GetScancodeFromKey(sdl.K_KP_DECIMAL)
+	internal2Scancode[KeyNumDivide] = sdl.GetScancodeFromKey(sdl.K_KP_DIVIDE)
+	internal2Scancode[KeyNumMultiply] = sdl.GetScancodeFromKey(sdl.K_KP_MULTIPLY)
+	internal2Scancode[KeyNumSubtract] = sdl.GetScancodeFromKey(sdl.K_KP_MINUS)
+	internal2Scancode[KeyNumAdd] = sdl.GetScancodeFromKey(sdl.K_KP_PLUS)
+	internal2Scancode[KeyNumEnter] = sdl.GetScancodeFromKey(sdl.K_KP_ENTER)
+	internal2Scancode[KeyNumEqual] = sdl.GetScancodeFromKey(sdl.K_KP_EQUALS)
+	internal2Scancode[KeyLeftShift] = sdl.GetScancodeFromKey(sdl.K_LSHIFT)
+	internal2Scancode[KeyLeftControl] = sdl.GetScancodeFromKey(sdl.K_LCTRL)
+	internal2Scancode[KeyLeftAlt] = sdl.GetScancodeFromKey(sdl.K_LALT)
+	internal2Scancode[KeyLeftSuper] = sdl.GetScancodeFromKey(sdl.K_LGUI)
+	internal2Scancode[KeyRightShift] = sdl.GetScancodeFromKey(sdl.K_RSHIFT)
+	internal2Scancode[KeyRightControl] = sdl.GetScancodeFromKey(sdl.K_RCTRL)
+	internal2Scancode[KeyRightAlt] = sdl.GetScancodeFromKey(sdl.K_RALT)
+	internal2Scancode[KeyRightSuper] = sdl.GetScancodeFromKey(sdl.K_RGUI)
+	internal2Scancode[KeyMenu] = sdl.GetScancodeFromKey(sdl.K_MENU)
+
+	// Create a reverse mapping of sdl scancodes to internal codes for
+	// all keys that are handled.
+	for code, scan := range internal2Scancode {
+		scancode2Internal[scan] = Key(code)
+	}
+
+	pretty.Println(internal2Scancode)
+	fmt.Println("")
+	pretty.Println(scancode2Internal)
 }
 
 // KeyPressed returns if key b was just pressed.
@@ -161,8 +302,6 @@ func (kb *keyboard) KeyUp(k Key) bool {
 	return !kb.lastInput[k] && !kb.input[k]
 }
 
-// TODO get key descriptor
-
 var (
 	// Keyboard exposes all keyboard functionality.
 	Keyboard = keyboard{}
@@ -174,14 +313,15 @@ func (kb *keyboard) updateStatus() {
 }
 
 func processKeyboardEvent(kbe *sdl.KeyboardEvent) {
+	inkey := scancode2Internal[kbe.Keysym.Scancode]
 	switch kbe.State {
 	case sdl.PRESSED:
 		Keyboard.any = true
-		Keyboard.input[kbe.Keysym.Scancode] = true
+		Keyboard.input[inkey] = true
 	case sdl.RELEASED:
-		Keyboard.input[kbe.Keysym.Scancode] = false
+		Keyboard.input[inkey] = false
 	}
-	fmt.Println("Key:", sdl.GetKeyName(kbe.Keysym.Sym))
+	fmt.Println("Key:", inkey)
 
 	// TODO mod
 	// fmt.Println("mod", kbe.Keysym.Mod)

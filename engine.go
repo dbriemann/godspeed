@@ -112,6 +112,9 @@ func Run() {
 	}
 	defer sdl.Quit()
 
+	// Init input.
+	Keyboard.init()
+
 	// Create SDL window.
 	window, err := sdl.CreateWindow(
 		Config.Window.Title,
